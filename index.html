@@ -31,8 +31,8 @@
                                                   } );
 			var plane = new THREE.Mesh( geometry, material );
 
-      // var light = new THREE.DirectionalLight( 0xffffff );
-      // light.position.set( 0, 1, 1000 ).normalize();
+      var light = new THREE.DirectionalLight( 0xffffff );
+      light.position.set( 0, 1, 1000 ).normalize();
 
 			scene.add( plane );
       scene.add( light );
@@ -47,10 +47,15 @@
 			var render = function () {
         requestAnimationFrame( render );
 
+        // Decrementing flying gives us the effect of flying over the terrain travelling NORTH
+        // Incrememnting flying gives us the effect of flying over the terrain travelling SOUTH
+        // The larger the value, the faster we fly over
+        // This value is sensitive to changes so if you want faster fly-over increase the value by a very small amount
         flying -= 0.06;
 
         // The higher the value of incr, the more "mountainous" the terrain becomes.
         // Lower values will create a a smoother terrain.
+        // Again, this value is sensitive so apply small changes to the value.
         var incr = 0.09;
 
         var vs = plane.geometry.vertices;
@@ -58,7 +63,7 @@
         var jj = flying;
         var row_end = SEGMENT_SIZE;
         for (i = 0; i < vs.length; i++) {
-          // Longer ranges creates "taller" mountains/hills
+          // Longer ranges creates "taller"/"deeper" mountains/hills
           terrain[i] = map(pn.noise(ii, jj, 0), 0, 1, -200, 200);
           ii += incr;
           if (i == row_end) {
