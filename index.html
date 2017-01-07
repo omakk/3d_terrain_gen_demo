@@ -1,50 +1,50 @@
 <!DOCTYPe html>
 <html>
-	<head>
-		<title>Perline Demo</title>
-		<style>
-			body { margin: 0;}
-			canvas { width: 100%; height: 100%;}
-		</style>
-	</head>
-	<body>
-		<script src="js/three.js"></script>
+  <head>
+  <title>Perline Demo</title>
+  <style>
+  body { margin: 0;}
+  canvas { width: 100%; height: 100%;}
+  </style>
+  </head>
+  <body>
+    <script src="js/three.js"></script>
     <script src="js/perlin.js"></script>
-		<script>
+    <script>
 
       // Linear map
       var map = function(x, a, b, c, d) {return (x-a) / (b-a) * (d-c) + c;}
 
-			var scene = new THREE.Scene();
-			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 2000 );
+      var scene = new THREE.Scene();
+      var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 2000 );
       var flying = 0;
 
       var renderer = new THREE.WebGLRenderer();
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			document.body.appendChild( renderer.domElement );
+      renderer.setSize( window.innerWidth, window.innerHeight );
+      document.body.appendChild( renderer.domElement );
 
       var SEGMENT_SIZE = 100;
-			var geometry = new THREE.PlaneGeometry( window.innerWidth+100, window.innerWidth, SEGMENT_SIZE, SEGMENT_SIZE);
-			var material = new THREE.MeshPhongMaterial( { color: 0x9f9f9f,
-                                                    wireframe: true,
-                                                    wireframeLinewidth: 10
-                                                  } );
-			var plane = new THREE.Mesh( geometry, material );
+      var geometry = new THREE.PlaneGeometry( window.innerWidth+100, window.innerWidth, SEGMENT_SIZE, SEGMENT_SIZE);
+      var material = new THREE.MeshPhongMaterial( { color: 0x9f9f9f,
+                                                      wireframe: true,
+                                                      wireframeLinewidth: 10
+                                                    } );
+      var plane = new THREE.Mesh( geometry, material );
 
       var light = new THREE.DirectionalLight( 0xffffff );
       light.position.set( 0, 1, 1000 ).normalize();
 
-			scene.add( plane );
+      scene.add( plane );
       scene.add( light );
 
       geometry.rotateY(-Math.PI / 4.);
 
-			camera.position.z = 400;
+      camera.position.z = 400;
       camera.rotation.x = 0.65;
 
       var terrain = []
       var pn = new Perlin(Math.random());
-			var render = function () {
+      var render = function () {
         requestAnimationFrame( render );
 
         // Decrementing flying gives us the effect of flying over the terrain travelling NORTH
@@ -79,10 +79,10 @@
         geometry.verticesNeedUpdate = true;
         geometry.normalsNeedUpdate = true;
 
-				renderer.render(scene, camera);
-			};
+        renderer.render(scene, camera);
+      };
 
-			render();
-		</script>
-	</body>
+      render();
+    </script>
+  </body>
 </html>
