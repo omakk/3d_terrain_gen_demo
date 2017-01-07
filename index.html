@@ -1,0 +1,83 @@
+<!DOCTYPe html>
+<html>
+	<head>
+		<title>Perline Demo</title>
+		<style>
+			body { margin: 0;}
+			canvas { width: 100%; height: 100%;}
+		</style>
+	</head>
+	<body>
+		<script src="js/three.js"></script>
+    <script src="js/perlin.js"></script>
+		<script>
+
+      // Linear map
+      var map = function(x, a, b, c, d) {return (x-a) / (b-a) * (d-c) + c;}
+
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 2000 );
+      var flying = 0;
+
+      var renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+      var SEGMENT_SIZE = 100;
+			var geometry = new THREE.PlaneGeometry( window.innerWidth+100, window.innerWidth, SEGMENT_SIZE, SEGMENT_SIZE);
+			var material = new THREE.MeshPhongMaterial( { color: 0x9f9f9f,
+                                                    wireframe: true,
+                                                    wireframeLinewidth: 10
+                                                  } );
+			var plane = new THREE.Mesh( geometry, material );
+
+      // var light = new THREE.DirectionalLight( 0xffffff );
+      // light.position.set( 0, 1, 1000 ).normalize();
+
+			scene.add( plane );
+      scene.add( light );
+
+      geometry.rotateY(-Math.PI / 4.);
+
+			camera.position.z = 400;
+      camera.rotation.x = 0.65;
+
+      var terrain = []
+      var pn = new Perlin(Math.random());
+			var render = function () {
+        requestAnimationFrame( render );
+
+        flying -= 0.06;
+
+        // The higher the value of incr, the more "mountainous" the terrain becomes.
+        // Lower values will create a a smoother terrain.
+        var incr = 0.09;
+
+        var vs = plane.geometry.vertices;
+        var ii = 0;
+        var jj = flying;
+        var row_end = SEGMENT_SIZE;
+        for (i = 0; i < vs.length; i++) {
+          // Longer ranges creates "taller" mountains/hills
+          terrain[i] = map(pn.noise(ii, jj, 0), 0, 1, -200, 200);
+          ii += incr;
+          if (i == row_end) {
+            ii = 0;
+            jj += incr;
+            row_end += SEGMENT_SIZE+1;
+          }
+        }
+
+        // Assign the results of the noise funciton for each vertex in the mesh
+        for (i = 0; i < vs.length; i++) { vs[i].z = terrain[i]; }
+
+        geometry.verticesNeedUpdate = true;
+        geometry.normalsNeedUpdate = true;
+
+				renderer.render(scene, camera);
+			};
+
+			render();
+		</script>
+	</body>
+</html>
